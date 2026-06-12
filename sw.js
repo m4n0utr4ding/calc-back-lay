@@ -1,11 +1,11 @@
 /* Service worker — Calculatrice BACK / LAY
    Stratégie : cache-first sur l'app shell (100 % offline une fois installée). */
-const CACHE = 'calc-backlay-v1';
+const CACHE = 'calc-backlay-v2';
 const ASSETS = [
   './',
   './index.html',
   './manifest.webmanifest',
-  './icon.svg',
+  './App_logo.png',
   './icon-maskable.svg'
 ];
 
@@ -29,7 +29,6 @@ self.addEventListener('fetch', event => {
   event.respondWith(
     caches.match(req).then(cached => cached || fetch(req)
       .then(res => {
-        // met en cache les nouvelles ressources GET de même origine
         if (res.ok && new URL(req.url).origin === self.location.origin) {
           const copy = res.clone();
           caches.open(CACHE).then(c => c.put(req, copy));

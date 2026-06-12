@@ -4,167 +4,199 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Calculatrice BACK / LAY — Book FR × OrbitX</title>
-<meta name="theme-color" content="#0f1115">
-<meta name="description" content="Calculatrice de rentabilité BACK book FR × LAY OrbitX, avec modes Freebet et Promotion.">
+<meta name="theme-color" content="#e7d9bb">
+<meta name="description" content="Calculatrice de rentabilité BACK book FR × LAY OrbitX — modes Conversion Freebet, Promotion et Standard.">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="BACK/LAY">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="icon" type="image/svg+xml" href="icon.svg">
-<link rel="apple-touch-icon" href="icon.svg">
+<link rel="icon" type="image/png" href="App_logo.png">
+<link rel="apple-touch-icon" href="App_logo.png">
 <style>
   :root{
-    --bg:#0f1115; --card:#171a21; --line:#262b36; --txt:#e6e9ef;
-    --muted:#8b93a3; --green:#21c87a; --red:#f0556b; --accent:#5b8cff; --amber:#f0a23b;
+    --paper:#e7d9bb; --card:#f4edd8; --card2:#efe6cd; --ink:#27374f; --ink2:#6f6750;
+    --line:#cbb88c; --rust:#a94e30; --gold:#bb8d36; --green:#3f7a4c;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
   }
   *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--txt);
-       font:15px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
-  .wrap{max-width:920px;margin:0 auto;
-        padding:max(28px,env(safe-area-inset-top)) max(20px,env(safe-area-inset-right))
-                max(70px,env(safe-area-inset-bottom)) max(20px,env(safe-area-inset-left))}
-  header{display:flex;align-items:baseline;justify-content:space-between;
-         flex-wrap:wrap;gap:8px;margin-bottom:8px}
-  h1{font-size:21px;margin:0;font-weight:650}
-  .brand{display:flex;align-items:center;gap:13px}
-  .logo{flex:0 0 auto;display:block}
-  .brandsub{color:var(--muted);font-size:12.5px;margin-top:3px;font-weight:500;letter-spacing:.02em}
-  .sub{color:var(--muted);font-size:13px;margin-bottom:22px}
-  .panel{background:var(--card);border:1px solid var(--line);border-radius:14px;
-         padding:18px 18px 20px;margin-bottom:18px}
-  .panel h2{font-size:12px;color:var(--muted);text-transform:uppercase;
-            letter-spacing:.04em;margin:0 0 14px}
-  .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  body{margin:0;color:var(--ink);-webkit-tap-highlight-color:transparent;overflow-x:hidden;
+       font:15px/1.45 var(--serif);
+       background-color:var(--paper);
+       background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");}
+  .wrap{max-width:880px;margin:0 auto;
+        padding:max(22px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right))
+                max(60px,env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left))}
+  .ic{width:1em;height:1em;display:inline-block;vertical-align:-0.16em;
+      fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+
+  header{display:flex;align-items:center;gap:14px;margin-bottom:18px}
+  .logo{width:60px;height:60px;flex:0 0 auto;border-radius:11px;border:1.6px solid var(--ink);
+        box-shadow:inset 0 0 0 2px var(--card),0 2px 0 rgba(39,55,79,.12)}
+  h1{font-size:21px;margin:0;font-weight:700;letter-spacing:.01em}
+  .tag{margin-top:3px;font-size:11px;font-weight:700;letter-spacing:.14em;color:var(--gold);text-transform:uppercase}
+
+  /* frames vintage : double filet gravé */
+  .panel,.sc,.card{background:var(--card);border:1.5px solid var(--ink);border-radius:11px;
+        box-shadow:inset 0 0 0 3px var(--card),inset 0 0 0 4px rgba(39,55,79,.16),0 2px 0 rgba(39,55,79,.08);
+        position:relative}
+
+  /* modes */
+  .modes{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+  #m-free{grid-column:1 / -1}
+  .mode{display:flex;align-items:center;justify-content:center;gap:9px;cursor:pointer;
+        background:var(--card);border:1.6px solid var(--ink);border-radius:10px;color:var(--ink);
+        padding:12px 10px;font:600 14px var(--serif)}
+  .mode .ic{width:20px;height:20px}
+  .mode.on{background:var(--ink);color:var(--paper);
+        box-shadow:inset 0 0 0 2px var(--ink),inset 0 0 0 3px var(--gold)}
+
+  /* sous-modes promo */
+  .subs{display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;margin:0 0 14px;width:100%;
+        background:var(--card);border:1.5px solid var(--ink);border-radius:10px;padding:4px}
+  .sub-btn{background:transparent;border:none;border-radius:7px;padding:8px 6px;cursor:pointer;
+        font:600 12px var(--serif);color:var(--ink2);text-align:center;line-height:1.2}
+  .sub-btn.on{background:var(--ink);color:var(--paper)}
+
+  /* saisie */
+  .panel{padding:14px 16px 16px;margin-bottom:16px}
+  .panel-top{display:flex;justify-content:flex-end;align-items:center;height:22px;margin-bottom:6px;position:relative}
+  .gear{width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;
+        background:var(--card2);border:1.4px solid var(--ink);border-radius:8px;color:var(--ink);padding:0}
+  .gear .ic{width:18px;height:18px}
+  .com-pop{position:absolute;top:36px;right:0;z-index:30;display:none;width:200px;
+        background:var(--card);border:1.5px solid var(--ink);border-radius:10px;padding:12px;
+        box-shadow:0 8px 22px rgba(39,55,79,.28)}
+  .com-pop.show{display:block}
+  .com-pop label{display:block;font-size:10.5px;color:var(--ink2);text-transform:uppercase;
+        letter-spacing:.05em;margin-bottom:6px;font-weight:700}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}
   @media(min-width:620px){.grid{grid-template-columns:1fr 1fr 1fr}}
-  .field label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px}
-  .field label .hint{color:#5d6575;font-weight:400}
-  .field input{width:100%;background:#11141a;border:1px solid var(--line);
-        border-radius:10px;color:var(--txt);font-size:18px;font-weight:600;
-        padding:11px 12px;outline:none}
-  .field input:focus{border-color:var(--accent)}
-  .field input.auto{color:var(--accent)}
+  .field label{display:block;font-size:11px;color:var(--ink2);margin-bottom:6px;
+        text-transform:uppercase;letter-spacing:.05em;font-weight:700}
+  .field .hint{color:var(--gold);font-weight:700;font-size:10px}
+  .field input{width:100%;background:var(--card2);border:1.4px solid var(--line);border-radius:9px;
+        color:var(--ink);font:700 18px var(--serif);padding:11px 12px;outline:none}
+  .field input:focus{border-color:var(--gold)}
+  .field input.auto{color:var(--gold)}
   .field .unit{position:relative}
-  .field .unit::after{content:attr(data-u);position:absolute;right:12px;top:50%;
-        transform:translateY(-50%);color:var(--muted);font-size:13px;font-weight:500;
-        pointer-events:none}
-  .field .unit input{padding-right:34px}
-  .modes{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
-  .mode{flex:1;min-width:160px;background:#11141a;border:1px solid var(--line);
-        border-radius:10px;padding:10px 13px;cursor:pointer;font-size:13px;
-        display:flex;gap:11px;align-items:center}
-  .mode.on{border-color:var(--accent);background:linear-gradient(135deg,#1b2233,#11141a)}
-  .mode .mico{font-size:21px;line-height:1;flex:0 0 auto}
-  .mode .mtext b{display:block;font-size:13.5px;margin-bottom:2px}
-  .mode .mtext span{color:var(--muted);font-size:11.5px;display:block;line-height:1.35}
-  .subs{display:flex;justify-content:center;gap:0;margin:0 auto 18px;
-        background:#11141a;border:1px solid var(--line);border-radius:11px;
-        padding:4px;width:fit-content;max-width:100%;flex-wrap:wrap}
-  .sub-btn{background:transparent;border:1px solid transparent;border-radius:8px;
-        padding:8px 16px;cursor:pointer;font-size:12.5px;color:var(--muted);
-        font-weight:600;white-space:nowrap}
-  .sub-btn.on{border-color:var(--amber);
-        background:linear-gradient(135deg,#241f13,#1a1610);color:var(--txt)}
-  .reset{background:none;border:1px solid var(--line);color:var(--muted);
-        border-radius:8px;padding:4px 10px;font-size:11.5px;cursor:pointer;margin-left:8px}
-  .reset:hover{border-color:var(--accent);color:var(--accent)}
-  .scen{display:grid;grid-template-columns:1fr;gap:14px;margin-bottom:18px}
-  @media(min-width:620px){.scen{grid-template-columns:1fr 1fr}}
-  .sc{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px}
-  .sc .k{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.03em}
-  .sc .v{font-size:27px;font-weight:700;margin-top:8px;line-height:1}
-  .sc .d{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.5}
-  .pos{color:var(--green)} .neg{color:var(--red)}
+  .field .unit::after{content:attr(data-u);position:absolute;right:12px;top:50%;transform:translateY(-50%);
+        color:var(--ink2);font-size:12px;font-weight:700;pointer-events:none}
+  .field .unit input{padding-right:36px}
+  .reset{background:none;border:1.2px solid var(--ink);color:var(--ink);border-radius:6px;
+        padding:1px 7px;font-size:12px;cursor:pointer;margin-left:5px;line-height:1.4}
+
+  /* scénarios WIN / LOOSE */
+  .scen{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+  .sc{padding:14px 15px}
+  .sc .k{font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;font-weight:700;
+        display:flex;align-items:center;gap:7px;color:var(--ink2);padding-right:24px}
+  .sc .k .ic{width:18px;height:18px;flex:0 0 auto}
+  .ic-win{color:var(--green)} .ic-loose{color:var(--rust)}
+  .sc .v{font-weight:800;margin-top:10px;line-height:1;font-size:clamp(20px,5.8vw,28px)}
+
+  /* cartes résultat */
   .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
-  .card{background:#11141a;border:1px solid var(--line);border-radius:12px;padding:13px 15px}
-  .card .label{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.03em}
-  .card .val{font-size:20px;font-weight:680;margin-top:5px}
-  .card .sub2{font-size:12px;margin-top:2px;color:var(--muted)}
-  .hl{background:linear-gradient(135deg,#13241b,#11141a);border-color:#1f5138}
-  .verdict{margin-top:16px;font-size:13.5px;color:var(--muted);line-height:1.6}
-  .verdict b{color:var(--txt)}
-  .foot{margin-top:18px;color:#5d6575;font-size:12px;line-height:1.7}
-  .foot code{background:#11141a;padding:2px 6px;border-radius:6px;color:var(--muted)}
-  .warn{color:var(--amber);font-size:12.5px;margin-top:10px;display:none}
+  .card{padding:13px 15px}
+  .card .label{color:var(--ink2);font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;
+        font-weight:700;display:flex;align-items:center;gap:6px;padding-right:22px}
+  .card .label .ic{width:15px;height:15px;color:var(--ink);flex:0 0 auto}
+  .card .val{font-size:20px;font-weight:800;margin-top:6px}
+  .card .sub2{font-size:11.5px;margin-top:3px;color:var(--ink2);font-weight:600}
+  .card.hl{box-shadow:inset 0 0 0 3px var(--card),inset 0 0 0 4px rgba(63,122,76,.5),0 2px 0 rgba(39,55,79,.08);
+        border-color:var(--green)}
+
+  .pos{color:var(--green)} .neg{color:var(--rust)}
+
+  /* bouton info + infobulle */
+  .info{position:absolute;top:9px;right:9px;width:22px;height:22px;display:flex;align-items:center;
+        justify-content:center;background:none;border:none;color:var(--ink2);cursor:pointer;padding:0}
+  .info .ic{width:17px;height:17px}
+  .info:active{color:var(--ink)}
+  #tip{position:absolute;z-index:60;display:none;background:var(--card);color:var(--ink);
+        border:1.5px solid var(--ink);border-radius:9px;padding:10px 12px;font-size:12.5px;line-height:1.5;
+        box-shadow:0 8px 22px rgba(39,55,79,.3)}
+  #tip.show{display:block}
+
+  .warn{color:var(--rust);font-size:12.5px;margin-top:10px;display:none;font-weight:700}
 </style>
 </head>
 <body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-gift" viewBox="0 0 24 24"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></symbol>
+  <symbol id="i-tag" viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><circle cx="7" cy="7" r="1.1"/></symbol>
+  <symbol id="i-scale" viewBox="0 0 24 24"><line x1="12" y1="4" x2="12" y2="20"/><line x1="7" y1="20" x2="17" y2="20"/><line x1="5" y1="7" x2="19" y2="7"/><path d="M5 7l-2.6 5h5.2z"/><path d="M19 7l-2.6 5h5.2z"/></symbol>
+  <symbol id="i-trophy" viewBox="0 0 24 24"><path d="M7 4h10v5a5 5 0 0 1-10 0V4z"/><path d="M7 6H4a2 2 0 0 0 0 4h1"/><path d="M17 6h3a2 2 0 0 1 0 4h-1"/><line x1="12" y1="14" x2="12" y2="18"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="18" x2="12" y2="21"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="8.5 12 11 14.5 15.5 9.5"/></symbol>
+  <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.6"/></symbol>
+  <symbol id="i-drop" viewBox="0 0 24 24"><path d="M12 2.7l5.3 5.3a7.5 7.5 0 1 1-10.6 0z"/></symbol>
+  <symbol id="i-coins" viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v6c0 1.66 3.13 3 7 3s7-1.34 7-3V6"/><path d="M5 12c0 1.66 3.13 3 7 3s7-1.34 7-3"/></symbol>
+  <symbol id="i-ticket" viewBox="0 0 24 24"><path d="M3 9a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2 1.5 1.5 0 0 0 0 3 2 2 0 0 1-2 2H5a2 2 0 0 1-2-2 1.5 1.5 0 0 0 0-3z"/><line x1="9" y1="7" x2="9" y2="17"/></symbol>
+  <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M22 12h-3M5 12H2M19.1 4.9l-2.1 2.1M7 17l-2.1 2.1M19.1 19.1l-2.1-2.1M7 7L4.9 4.9"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5"/><line x1="12" y1="11" x2="12" y2="16.5"/><circle cx="12" cy="7.6" r="1" style="fill:currentColor;stroke:none"/></symbol>
+</svg>
+
 <div class="wrap">
   <header>
-    <div class="brand">
-      <svg class="logo" width="50" height="50" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Logo BACK/LAY multisport">
-        <defs>
-          <linearGradient id="lg" x1="4" y1="4" x2="44" y2="44" gradientUnits="userSpaceOnUse">
-            <stop stop-color="#5b8cff"/><stop offset="1" stop-color="#21c87a"/>
-          </linearGradient>
-        </defs>
-        <rect x="3" y="3" width="42" height="42" rx="13" fill="url(#lg)"/>
-        <rect x="3.6" y="3.6" width="40.8" height="40.8" rx="12.4" fill="none" stroke="#ffffff" stroke-opacity=".18" stroke-width="1.2"/>
-        <text x="24" y="27" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif" font-size="23" font-weight="800" fill="#0f1115">€</text>
-        <circle cx="15.5" cy="37.5" r="3.7" fill="#ffffff"/>
-        <circle cx="24"   cy="37.5" r="3.7" fill="#f0a23b"/>
-        <circle cx="32.5" cy="37.5" r="3.7" fill="#cde85b"/>
-      </svg>
-      <div>
-        <h1>Calculatrice BACK / LAY</h1>
-        <div class="brandsub">Book FR × OrbitX — couverture multisport</div>
-      </div>
+    <img class="logo" src="App_logo.png" alt="Logo BACK/LAY multisport" width="60" height="60">
+    <div>
+      <h1>Calculatrice BACK / LAY</h1>
+      <div class="tag">Book FR × OrbitX</div>
     </div>
   </header>
-  <div class="sub">Mise BACK chez un book FR couverte par un LAY sur OrbitX. Par défaut, la mise OrbitX affichée est le <b>point d'équilibre</b> (même gain que l'évènement se produise ou non).</div>
 
   <div class="modes">
-    <div class="mode on" id="m-normal" onclick="setMode('normal')">
-      <span class="mico">⚖️</span>
-      <div class="mtext"><b>Mise normale</b><span>Pari classique — la mise BACK est remboursée si tu gagnes</span></div>
-    </div>
-    <div class="mode" id="m-free" onclick="setMode('free')">
-      <span class="mico">🎁</span>
-      <div class="mtext"><b>Freebet (SNR)</b><span>Mise BACK non remboursée — tu joues un pari gratuit</span></div>
-    </div>
-    <div class="mode" id="m-promo" onclick="setMode('promo')">
-      <span class="mico">🏷️</span>
-      <div class="mtext"><b>Promotion</b><span>Pari qualifiant qui débloque un freebet</span></div>
-    </div>
+    <button type="button" class="mode on" id="m-free" onclick="setMode('free')">
+      <svg class="ic"><use href="#i-gift"/></svg><span>Conversion Freebet</span>
+    </button>
+    <button type="button" class="mode" id="m-promo" onclick="setMode('promo')">
+      <svg class="ic"><use href="#i-tag"/></svg><span>Promotion</span>
+    </button>
+    <button type="button" class="mode" id="m-normal" onclick="setMode('normal')">
+      <svg class="ic"><use href="#i-scale"/></svg><span>Standard</span>
+    </button>
   </div>
 
   <div class="subs" id="promo-subs" style="display:none">
-    <div class="sub-btn on" id="s-fsp" onclick="setSub('fsp')">Freebet si perdant</div>
-    <div class="sub-btn" id="s-fsg" onclick="setSub('fsg')">Freebet si gagnant</div>
-    <div class="sub-btn" id="s-fqqa" onclick="setSub('fqqa')">Freebet quoi qu'il arrive</div>
+    <button type="button" class="sub-btn on" id="s-fsp" onclick="setSub('fsp')">Freebet si perdant</button>
+    <button type="button" class="sub-btn" id="s-fsg" onclick="setSub('fsg')">Freebet si gagnant</button>
+    <button type="button" class="sub-btn" id="s-fqqa" onclick="setSub('fqqa')">Freebet quoi qu'il arrive</button>
   </div>
 
   <div class="panel">
-    <h2>Saisie</h2>
+    <div class="panel-top">
+      <button type="button" class="gear" id="gear" aria-label="Réglage commission OrbitX"><svg class="ic"><use href="#i-gear"/></svg></button>
+      <div class="com-pop" id="com-pop">
+        <label>Commission OrbitX</label>
+        <div class="unit" data-u="%"><input id="com" type="text" inputmode="decimal" value="3"></div>
+      </div>
+    </div>
     <div class="grid">
       <div class="field">
-        <label>Cote BACK <span class="hint">(book FR)</span></label>
+        <label>Cote BACK</label>
         <div class="unit" data-u="cote"><input id="ob" type="text" inputmode="decimal" value="2.10"></div>
       </div>
       <div class="field">
-        <label>Cote LAY <span class="hint">(OrbitX)</span></label>
+        <label>Cote LAY</label>
         <div class="unit" data-u="cote"><input id="ol" type="text" inputmode="decimal" value="2.16"></div>
       </div>
-      <div class="field">
-        <label>Commission OrbitX</label>
-        <div class="unit" data-u="%"><input id="com" type="text" inputmode="decimal" value="5"></div>
-      </div>
-      <div class="field">
-        <label>Mise BACK <span class="hint">(book FR)</span></label>
-        <div class="unit" data-u="€"><input id="sb" type="text" inputmode="decimal" value="100"></div>
-      </div>
       <div class="field promo-only" style="display:none">
-        <label>Valeur freebet <span class="hint">(à débloquer)</span></label>
+        <label>Valeur freebet</label>
         <div class="unit" data-u="€"><input id="fb" type="text" inputmode="decimal" value="10"></div>
       </div>
       <div class="field promo-only" style="display:none">
-        <label>Taux de conversion <span class="hint">(du freebet)</span></label>
+        <label>Conversion</label>
         <div class="unit" data-u="%"><input id="conv" type="text" inputmode="decimal" value="70"></div>
       </div>
       <div class="field">
-        <label>Mise LAY OrbitX
-          <span class="hint" id="lay-tag">— équilibre</span>
-          <button class="reset" id="reset-lay" onclick="resetLay()" style="display:none">↺ équilibre</button>
+        <label>Mise BACK</label>
+        <div class="unit" data-u="€"><input id="sb" type="text" inputmode="decimal" value="100"></div>
+      </div>
+      <div class="field">
+        <label>Mise LAY <span class="hint" id="lay-tag">auto</span>
+          <button class="reset" id="reset-lay" onclick="resetLay()" style="display:none">↺</button>
         </label>
         <div class="unit" data-u="€"><input id="sl" class="auto" type="text" inputmode="decimal" placeholder="auto"></div>
       </div>
@@ -174,59 +206,52 @@
 
   <div class="scen">
     <div class="sc">
-      <div class="k">Si l'évènement SE PRODUIT</div>
+      <button type="button" class="info" data-tip="Profit si le pari BACK gagne (l'évènement se produit) : gain au book FR moins la responsabilité perdue sur le LAY OrbitX (+ freebet éventuel)."><svg class="ic"><use href="#i-info"/></svg></button>
+      <div class="k"><svg class="ic ic-win"><use href="#i-trophy"/></svg> Si Back WIN</div>
       <div class="v" id="win-v">—</div>
-      <div class="d" id="win-d"></div>
     </div>
     <div class="sc">
-      <div class="k">Si l'évènement NE se produit PAS</div>
+      <button type="button" class="info" data-tip="Profit si le pari BACK perd (l'évènement ne se produit pas) : gain net du LAY OrbitX (mise LAY − commission) moins la mise BACK (non perdue en Conversion Freebet) (+ freebet éventuel)."><svg class="ic"><use href="#i-info"/></svg></button>
+      <div class="k"><svg class="ic ic-loose"><use href="#i-down"/></svg> Si Back LOOSE</div>
       <div class="v" id="lose-v">—</div>
-      <div class="d" id="lose-d"></div>
     </div>
   </div>
 
   <div class="cards">
     <div class="card hl">
-      <div class="label">Profit garanti (pire cas)</div>
+      <button type="button" class="info" data-tip="Le moins bon des deux scénarios — ce que tu sécurises quoi qu'il arrive. = min(Si Back WIN, Si Back LOOSE)."><svg class="ic"><use href="#i-info"/></svg></button>
+      <div class="label"><svg class="ic"><use href="#i-shield"/></svg> Profit garanti</div>
       <div class="val" id="c-guar">—</div>
       <div class="sub2" id="c-roi"></div>
     </div>
     <div class="card">
-      <div class="label">Mise LAY conseillée</div>
+      <button type="button" class="info" data-tip="Mise à placer en LAY sur OrbitX pour égaliser les deux issues (point d'équilibre). = (mise BACK × cote BACK) / (cote LAY − commission)."><svg class="ic"><use href="#i-info"/></svg></button>
+      <div class="label"><svg class="ic"><use href="#i-target"/></svg> Mise LAY conseillée</div>
       <div class="val" id="c-lay">—</div>
-      <div class="sub2">point d'équilibre</div>
     </div>
     <div class="card">
-      <div class="label">Responsabilité OrbitX</div>
+      <button type="button" class="info" data-tip="Liquidité à provisionner sur OrbitX (responsabilité du LAY) = mise LAY × (cote LAY − 1). C'est la somme bloquée si l'évènement se produit."><svg class="ic"><use href="#i-info"/></svg></button>
+      <div class="label"><svg class="ic"><use href="#i-drop"/></svg> Liquidité</div>
       <div class="val" id="c-liab">—</div>
-      <div class="sub2">à provisionner</div>
     </div>
     <div class="card">
-      <div class="label">Capital engagé</div>
+      <button type="button" class="info" data-tip="Trésorerie totale immobilisée = mise BACK (book FR) + liquidité LAY (OrbitX)."><svg class="ic"><use href="#i-info"/></svg></button>
+      <div class="label"><svg class="ic"><use href="#i-coins"/></svg> Capital total engagé</div>
       <div class="val" id="c-cap">—</div>
-      <div class="sub2">mise BACK + responsabilité</div>
     </div>
     <div class="card promo-only" style="display:none">
-      <div class="label">Freebet valorisé</div>
+      <button type="button" class="info" data-tip="PnL réel du pari gratuit débloqué = valeur du freebet × taux de conversion."><svg class="ic"><use href="#i-info"/></svg></button>
+      <div class="label"><svg class="ic"><use href="#i-ticket"/></svg> Freebet valorisé</div>
       <div class="val" id="c-fb">—</div>
       <div class="sub2" id="c-fb-sub"></div>
     </div>
   </div>
-
-  <div class="verdict" id="verdict"></div>
-
-  <div class="foot">
-    <div><b>Formules</b> — Responsabilité = <code>mise_lay × (cote_lay − 1)</code></div>
-    <div>Équilibre (mise normale) : <code>mise_lay = (mise_back × cote_back) / (cote_lay − commission)</code></div>
-    <div>Équilibre (freebet) : <code>mise_lay = (mise_back × (cote_back − 1)) / (cote_lay − commission)</code></div>
-    <div>Promo · freebet valorisé = <code>valeur_freebet × taux_conversion</code> (PnL réel du pari gratuit)</div>
-    <div>Équilibre promo FSP : <code>(mise_back × cote_back − FB_valorisé) / (cote_lay − commission)</code> · FSG : <code>+ FB_valorisé</code> · FQQA : même équilibre qu'une mise normale (le FB s'ajoute aux 2 issues).</div>
-    <div>La commission OrbitX n'est prélevée que sur un gain LAY (quand l'évènement ne se produit pas).</div>
-  </div>
 </div>
 
+<div id="tip" role="tooltip"></div>
+
 <script>
-let mode = 'normal';
+let mode = 'free';
 let promoSub = 'fsp';
 let layManual = false;
 
@@ -255,7 +280,7 @@ function resetLay(){
   layManual = false;
   $('sl').classList.add('auto');
   $('reset-lay').style.display = 'none';
-  $('lay-tag').textContent = '— équilibre';
+  $('lay-tag').textContent = 'auto';
   compute();
 }
 
@@ -264,7 +289,7 @@ $('sl').addEventListener('input', () => {
   layManual = v !== '';
   $('sl').classList.toggle('auto', !layManual);
   $('reset-lay').style.display = layManual ? 'inline-block' : 'none';
-  $('lay-tag').textContent = layManual ? '— manuelle' : '— équilibre';
+  $('lay-tag').textContent = layManual ? 'manuelle' : 'auto';
   compute();
 });
 
@@ -286,17 +311,17 @@ function compute(){
 
   // valeur du freebet de la promo
   const isPromo = mode==='promo';
-  const F = isPromo ? (num($('fb').value)||0) : 0;        // valeur freebet brute
-  const r = isPromo ? (num($('conv').value)||0)/100 : 0;  // taux de conversion
-  const FBval = F*r;                                       // freebet valorisé (PnL réel)
+  const F = isPromo ? (num($('fb').value)||0) : 0;
+  const r = isPromo ? (num($('conv').value)||0)/100 : 0;
+  const FBval = F*r;
 
   // mise lay d'équilibre selon le mode
   let layEq;
   if(mode==='free') layEq = sb*(ob-1)/(ol-c);
   else if(isPromo){
-    if(promoSub==='fsp')      layEq = (sb*ob - FBval)/(ol-c); // underlay : FB sur l'issue perdante
-    else if(promoSub==='fsg') layEq = (sb*ob + FBval)/(ol-c); // overlay : FB sur l'issue gagnante
-    else                      layEq = sb*ob/(ol-c);          // fqqa : FB neutre, équilibre normal
+    if(promoSub==='fsp')      layEq = (sb*ob - FBval)/(ol-c);
+    else if(promoSub==='fsg') layEq = (sb*ob + FBval)/(ol-c);
+    else                      layEq = sb*ob/(ol-c);
     if(layEq < 0) layEq = 0;
   } else layEq = sb*ob/(ol-c);
 
@@ -305,19 +330,17 @@ function compute(){
   if(!layManual) $('sl').placeholder = layEq.toLocaleString('fr-FR',{maximumFractionDigits:2});
   if(layManual && !(sl>=0)){ warn.style.display='block'; warn.textContent='Mise OrbitX invalide.'; return; }
 
-  const liab = sl*(ol-1);                       // responsabilité
-  const backGain = sb*(ob-1);                   // gain book si l'évènement se produit
+  const liab = sl*(ol-1);
+  const backGain = sb*(ob-1);
 
-  // Profit de base (pari qualifiant ; freebet pur = mise back non perdue)
   let win  = backGain - liab;
   let lose = sl*(1-c) - (mode==='free' ? 0 : sb);
 
-  // Crédit freebet de la promo selon le sous-mode
   let fbWin = 0, fbLose = 0;
   if(isPromo){
-    if(promoSub==='fsp')       fbLose = FBval;   // freebet si l'évènement ne se produit pas
-    else if(promoSub==='fsg')  fbWin  = FBval;   // freebet si l'évènement se produit
-    else { fbWin = FBval; fbLose = FBval; }       // fqqa : dans les deux cas
+    if(promoSub==='fsp')       fbLose = FBval;
+    else if(promoSub==='fsg')  fbWin  = FBval;
+    else { fbWin = FBval; fbLose = FBval; }
     win += fbWin; lose += fbLose;
   }
 
@@ -325,25 +348,14 @@ function compute(){
   const cap = sb + liab;
   const roi = sb>0 ? guar/sb*100 : 0;
 
-  // Scénarios
   $('win-v').textContent = eur(win);
   $('win-v').className = 'v ' + cls(win);
-  let winD = `Book FR : +${eur(backGain)}<br>OrbitX (resp.) : −${eur(liab)}`;
-  if(fbWin>0) winD += `<br>Freebet : +${eur(fbWin)}`;
-  $('win-d').innerHTML = winD;
-
   $('lose-v').textContent = eur(lose);
   $('lose-v').className = 'v ' + cls(lose);
-  let loseD = (mode==='free')
-      ? `Book FR : 0 € (freebet)<br>OrbitX : +${eur(sl*(1-c))}`
-      : `Book FR : −${eur(sb)}<br>OrbitX : +${eur(sl*(1-c))}`;
-  if(fbLose>0) loseD += `<br>Freebet : +${eur(fbLose)}`;
-  $('lose-d').innerHTML = loseD;
 
-  // Cards
   $('c-guar').textContent = eur(guar);
   $('c-guar').className = 'val ' + cls(guar);
-  $('c-roi').textContent = (mode==='free'?'Conversion freebet : ':'Rendement / mise : ') + roi.toLocaleString('fr-FR',{maximumFractionDigits:1}) + ' %';
+  $('c-roi').textContent = (mode==='free'?'Conversion : ':'Rendement : ') + roi.toLocaleString('fr-FR',{maximumFractionDigits:1}) + ' %';
   $('c-lay').textContent = eur(layEq);
   $('c-liab').textContent = eur(liab);
   $('c-cap').textContent = eur(cap);
@@ -351,30 +363,34 @@ function compute(){
     $('c-fb').textContent = eur(FBval);
     $('c-fb-sub').textContent = `${eur(F)} × ${(r*100).toLocaleString('fr-FR',{maximumFractionDigits:1})} %`;
   }
-
-  // Verdict
-  const ecart = win - lose;
-  let v = '';
-  if(layManual){
-    const dir = ecart>0.005 ? `tu gagnes <b>${eur(Math.abs(ecart))}</b> de plus si l'évènement se produit` :
-                ecart<-0.005 ? `tu gagnes <b>${eur(Math.abs(ecart))}</b> de plus si l'évènement ne se produit pas` :
-                `les deux issues sont équilibrées`;
-    v = `Mise OrbitX <b>manuelle</b> (${eur(sl)}) — écart entre les 2 issues : ${dir}. `
-      + `À l'équilibre il faudrait miser <b>${eur(layEq)}</b>.`;
-  } else if(isPromo){
-    const lbl = {fsp:'freebet si perdant', fsg:'freebet si gagnant', fqqa:'freebet quoi qu\'il arrive'}[promoSub];
-    v = `Promo <b>${lbl}</b> : tu sécurises <b class="${cls(guar)}">${eur(guar)}</b> quelle que soit l'issue `
-      + `(freebet de ${eur(F)} valorisé à ${(r*100).toLocaleString('fr-FR',{maximumFractionDigits:1})} % = <b>${eur(FBval)}</b>, déjà inclus). `
-      + `Mise LAY d'équilibre : <b>${eur(layEq)}</b>.`;
-  } else {
-    v = (mode==='free')
-      ? `À l'équilibre tu sécurises <b class="${cls(guar)}">${eur(guar)}</b> quoi qu'il arrive, soit <b>${roi.toLocaleString('fr-FR',{maximumFractionDigits:1})} %</b> de la valeur du freebet.`
-      : (guar>=0
-          ? `Arbitrage <b class="pos">profitable</b> : <b class="pos">${eur(guar)}</b> garantis quelle que soit l'issue.`
-          : `Pari qualifiant : perte sèche de <b class="neg">${eur(guar)}</b> (coût pour débloquer un bonus/freebet derrière).`);
-  }
-  $('verdict').innerHTML = v;
 }
+
+// engrenage commission
+const comPop = $('com-pop');
+$('gear').addEventListener('click', e => { e.stopPropagation(); comPop.classList.toggle('show'); hideTip(); });
+comPop.addEventListener('click', e => e.stopPropagation());
+
+// infobulles « i »
+const tip = $('tip');
+let tipOwner = null;
+function hideTip(){ tip.classList.remove('show'); tipOwner = null; }
+document.querySelectorAll('.info').forEach(b => {
+  b.addEventListener('click', e => {
+    e.stopPropagation();
+    comPop.classList.remove('show');
+    if(tipOwner === b){ hideTip(); return; }
+    tip.textContent = b.getAttribute('data-tip');
+    tip.classList.add('show'); tipOwner = b;
+    const rect = b.getBoundingClientRect();
+    const tw = Math.min(250, window.innerWidth - 20);
+    tip.style.width = tw + 'px';
+    let left = window.scrollX + rect.right - tw;
+    if(left < 10) left = 10;
+    tip.style.left = left + 'px';
+    tip.style.top = (window.scrollY + rect.bottom + 8) + 'px';
+  });
+});
+document.addEventListener('click', () => { hideTip(); comPop.classList.remove('show'); });
 
 compute();
 
