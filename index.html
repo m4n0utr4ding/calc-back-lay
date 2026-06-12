@@ -66,9 +66,10 @@
   /* saisie */
   .panel{padding:14px 16px 16px;margin-bottom:16px}
   .panel-top{display:flex;justify-content:flex-end;align-items:center;height:24px;margin-bottom:6px;position:relative}
-  .gear{width:34px;height:34px;display:flex;align-items:center;justify-content:center;cursor:pointer;
-        background:var(--card2);border:1px solid var(--line);border-radius:10px;color:var(--ink2);padding:0}
+  .gear{width:24px;height:24px;display:flex;align-items:center;justify-content:center;cursor:pointer;
+        background:none;border:none;color:#aab2c2;padding:0}
   .gear .ic{width:18px;height:18px}
+  .gear:active{color:var(--ink)}
   .com-pop{position:absolute;top:40px;right:0;z-index:30;display:none;width:210px;
         background:var(--card);border:1px solid var(--line);border-radius:14px;padding:13px;box-shadow:var(--sh)}
   .com-pop.show{display:block}
@@ -109,6 +110,9 @@
   .card .sub2{font-size:11.5px;margin-top:3px;color:var(--ink2);font-weight:500}
   .card.hl{background:#f1faf5;border-color:#bfe6d3}
   .card.hl .label .ic{color:var(--green)}
+  .guar-card{grid-column:1 / -1}
+  .guar-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .guar-grid .big{font-size:clamp(23px,7vw,32px);font-weight:700;margin-top:8px;line-height:1;letter-spacing:-.01em}
 
   .pos{color:var(--green)} .neg{color:var(--rust)}
 
@@ -171,7 +175,7 @@
 
   <div class="panel">
     <div class="panel-top">
-      <button type="button" class="gear" id="gear" aria-label="Réglage commission OrbitX"><svg class="ic"><use href="#i-gear"/></svg></button>
+      <button type="button" class="gear" id="gear" aria-label="Modifier la commission OrbitX"><svg class="ic"><use href="#i-info"/></svg></button>
       <div class="com-pop" id="com-pop">
         <label>Commission OrbitX</label>
         <div class="unit" data-u="%"><input id="com" type="text" inputmode="decimal" value="3"></div>
@@ -180,11 +184,11 @@
     <div class="grid">
       <div class="field">
         <label>Cote BACK</label>
-        <div class="unit" data-u="cote"><input id="ob" type="text" inputmode="decimal" value="2.10"></div>
+        <div class="unit" data-u="cote"><input id="ob" type="text" inputmode="decimal" value="10"></div>
       </div>
       <div class="field">
         <label>Cote LAY</label>
-        <div class="unit" data-u="cote"><input id="ol" type="text" inputmode="decimal" value="2.16"></div>
+        <div class="unit" data-u="cote"><input id="ol" type="text" inputmode="decimal" value="10.2"></div>
       </div>
       <div class="field promo-only" style="display:none">
         <label>Valeur freebet</label>
@@ -192,11 +196,11 @@
       </div>
       <div class="field promo-only" style="display:none">
         <label>Conversion</label>
-        <div class="unit" data-u="%"><input id="conv" type="text" inputmode="decimal" value="70"></div>
+        <div class="unit" data-u="%"><input id="conv" type="text" inputmode="decimal" value="85"></div>
       </div>
       <div class="field">
-        <label>Mise BACK</label>
-        <div class="unit" data-u="€"><input id="sb" type="text" inputmode="decimal" value="100"></div>
+        <label id="lbl-sb">Mise BACK</label>
+        <div class="unit" id="unit-sb" data-u="€"><input id="sb" type="text" inputmode="decimal" value="10"></div>
       </div>
       <div class="field">
         <label>Mise LAY <span class="hint" id="lay-tag">auto</span>
@@ -208,7 +212,7 @@
     <div class="warn" id="warn"></div>
   </div>
 
-  <div class="scen">
+  <div class="scen" id="scen" style="display:none">
     <div class="sc">
       <button type="button" class="info" data-tip="Profit si le pari BACK gagne (l'évènement se produit) : gain au book FR moins la responsabilité perdue sur le LAY OrbitX (+ freebet éventuel)."><svg class="ic"><use href="#i-info"/></svg></button>
       <div class="k"><svg class="ic ic-win"><use href="#i-trophy"/></svg> Si Back WIN</div>
@@ -222,32 +226,28 @@
   </div>
 
   <div class="cards">
-    <div class="card hl">
-      <button type="button" class="info" data-tip="Le moins bon des deux scénarios — ce que tu sécurises quoi qu'il arrive. = min(Si Back WIN, Si Back LOOSE)."><svg class="ic"><use href="#i-info"/></svg></button>
-      <div class="label"><svg class="ic"><use href="#i-shield"/></svg> Profit garanti</div>
-      <div class="val" id="c-guar">—</div>
-      <div class="sub2" id="c-roi"></div>
+    <div class="card hl guar-card">
+      <button type="button" class="info" data-tip="Le moins bon des deux scénarios — ce que tu sécurises quoi qu'il arrive (à l'équilibre, les deux issues sont identiques)."><svg class="ic"><use href="#i-info"/></svg></button>
+      <div class="guar-grid">
+        <div class="stat">
+          <div class="label"><svg class="ic"><use href="#i-shield"/></svg> Profit garanti</div>
+          <div class="big" id="c-guar">—</div>
+        </div>
+        <div class="stat">
+          <div class="label" id="c-roi-label">Conversion</div>
+          <div class="big" id="c-roi">—</div>
+        </div>
+      </div>
     </div>
     <div class="card">
-      <button type="button" class="info" data-tip="Mise à placer en LAY sur OrbitX pour égaliser les deux issues (point d'équilibre). = (mise BACK × cote BACK) / (cote LAY − commission)."><svg class="ic"><use href="#i-info"/></svg></button>
-      <div class="label"><svg class="ic"><use href="#i-target"/></svg> Mise LAY conseillée</div>
-      <div class="val" id="c-lay">—</div>
-    </div>
-    <div class="card">
-      <button type="button" class="info" data-tip="Liquidité à provisionner sur OrbitX (responsabilité du LAY) = mise LAY × (cote LAY − 1). C'est la somme bloquée si l'évènement se produit."><svg class="ic"><use href="#i-info"/></svg></button>
-      <div class="label"><svg class="ic"><use href="#i-drop"/></svg> Liquidité</div>
+      <button type="button" class="info" data-tip="Liquidité à provisionner sur OrbitX (responsabilité du LAY) = mise LAY × (cote LAY − 1). Somme bloquée si l'évènement se produit."><svg class="ic"><use href="#i-info"/></svg></button>
+      <div class="label"><svg class="ic"><use href="#i-drop"/></svg> Liquidité bloquée OrbitX</div>
       <div class="val" id="c-liab">—</div>
     </div>
     <div class="card">
-      <button type="button" class="info" data-tip="Trésorerie totale immobilisée = mise BACK (book FR) + liquidité LAY (OrbitX)."><svg class="ic"><use href="#i-info"/></svg></button>
+      <button type="button" class="info" data-tip="Trésorerie totale immobilisée. Standard/Promotion = mise BACK + liquidité OrbitX. Conversion Freebet = liquidité OrbitX + le freebet (en FB)."><svg class="ic"><use href="#i-info"/></svg></button>
       <div class="label"><svg class="ic"><use href="#i-coins"/></svg> Capital total engagé</div>
       <div class="val" id="c-cap">—</div>
-    </div>
-    <div class="card promo-only" style="display:none">
-      <button type="button" class="info" data-tip="PnL réel du pari gratuit débloqué = valeur du freebet × taux de conversion."><svg class="ic"><use href="#i-info"/></svg></button>
-      <div class="label"><svg class="ic"><use href="#i-ticket"/></svg> Freebet valorisé</div>
-      <div class="val" id="c-fb">—</div>
-      <div class="sub2" id="c-fb-sub"></div>
     </div>
   </div>
 </div>
@@ -352,21 +352,30 @@ function compute(){
   const cap = sb + liab;
   const roi = sb>0 ? guar/sb*100 : 0;
 
+  // libellé / unité de la mise BACK selon le mode
+  $('lbl-sb').textContent = (mode==='free') ? 'Mise BACK Freebet' : 'Mise BACK';
+  $('unit-sb').setAttribute('data-u', (mode==='free') ? 'FB' : '€');
+
+  // scénarios WIN / LOOSE : visibles seulement si la mise LAY diffère de l'équilibre
+  $('scen').style.display = (layManual && Math.abs(sl - layEq) > 0.005) ? 'grid' : 'none';
   $('win-v').textContent = eur(win);
   $('win-v').className = 'v ' + cls(win);
   $('lose-v').textContent = eur(lose);
   $('lose-v').className = 'v ' + cls(lose);
 
+  // Profit garanti + conversion/rendement (même taille)
   $('c-guar').textContent = eur(guar);
-  $('c-guar').className = 'val ' + cls(guar);
-  $('c-roi').textContent = (mode==='free'?'Conversion : ':'Rendement : ') + roi.toLocaleString('fr-FR',{maximumFractionDigits:1}) + ' %';
-  $('c-lay').textContent = eur(layEq);
+  $('c-guar').className = 'big ' + cls(guar);
+  $('c-roi-label').textContent = (mode==='free') ? 'Conversion' : 'Rendement';
+  $('c-roi').textContent = roi.toLocaleString('fr-FR',{maximumFractionDigits:1}) + ' %';
+
+  // Liquidité bloquée OrbitX
   $('c-liab').textContent = eur(liab);
-  $('c-cap').textContent = eur(cap);
-  if(isPromo){
-    $('c-fb').textContent = eur(FBval);
-    $('c-fb-sub').textContent = `${eur(F)} × ${(r*100).toLocaleString('fr-FR',{maximumFractionDigits:1})} %`;
-  }
+
+  // Capital total engagé
+  $('c-cap').textContent = (mode==='free')
+    ? `${eur(liab)} + ${sb.toLocaleString('fr-FR')} FB`
+    : eur(cap);
 }
 
 // engrenage commission

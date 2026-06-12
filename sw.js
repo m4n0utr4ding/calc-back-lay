@@ -1,12 +1,12 @@
 /* Service worker — Calculatrice BACK / LAY
    Stratégie : cache-first sur l'app shell (100 % offline une fois installée). */
-const CACHE = 'calc-backlay-v3';
+const CACHE = 'calc-backlay-v4';
 const ASSETS = [
   './',
   './index.html',
   './manifest.webmanifest',
   './app-logo.png',
-  './icon-maskable.svg',
+  './app-logo-maskable.png',
   './google-sans-flex.woff2'
 ];
 
