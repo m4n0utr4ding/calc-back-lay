@@ -1,12 +1,13 @@
 /* Service worker — Calculatrice BACK / LAY
    Stratégie : cache-first sur l'app shell (100 % offline une fois installée). */
-const CACHE = 'calc-backlay-v2';
+const CACHE = 'calc-backlay-v3';
 const ASSETS = [
   './',
   './index.html',
   './manifest.webmanifest',
   './app-logo.png',
-  './icon-maskable.svg'
+  './icon-maskable.svg',
+  './google-sans-flex.woff2'
 ];
 
 self.addEventListener('install', event => {
