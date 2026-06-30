@@ -61,7 +61,7 @@
         background:var(--card2);border-radius:13px;padding:4px}
   .sub-btn{background:transparent;border:none;border-radius:10px;padding:9px 6px;cursor:pointer;
         font:600 12px var(--font);color:var(--ink2);text-align:center;line-height:1.2;transition:.15s}
-  .sub-btn.on{background:var(--brand);color:#fff;box-shadow:0 1px 3px rgba(20,30,60,.18)}
+  .sub-btn.on{background:var(--gold);color:#fff;box-shadow:0 1px 3px rgba(187,141,54,.28)}
 
   /* saisie */
   .panel{padding:14px 16px 16px;margin-bottom:16px}
@@ -76,10 +76,11 @@
   .com-pop label{display:block;font-size:10.5px;color:var(--ink2);text-transform:uppercase;
         letter-spacing:.05em;margin-bottom:6px;font-weight:600}
   .grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}
-  @media(min-width:620px){.grid{grid-template-columns:1fr 1fr 1fr}}
+  @media(min-width:620px){.grid.cols-3{grid-template-columns:1fr 1fr 1fr}}
   .field label{display:block;font-size:10.5px;color:var(--ink2);margin-bottom:6px;
         text-transform:uppercase;letter-spacing:.05em;font-weight:600}
   .field .hint{color:var(--gold);font-weight:600;font-size:10px;letter-spacing:0}
+  .field .book-hint{font-weight:500;font-size:9.5px;letter-spacing:0;text-transform:none;color:var(--ink2);margin-left:4px}
   .field input{width:100%;background:var(--card2);border:1px solid transparent;border-radius:11px;
         color:var(--ink);font:600 18px var(--font);padding:12px;outline:none;transition:.15s}
   .field input:focus{border-color:var(--brand);background:#fff;box-shadow:0 0 0 3px rgba(30,42,68,.1)}
@@ -101,7 +102,8 @@
   .sc .v{font-weight:700;margin-top:10px;line-height:1;font-size:clamp(21px,5.8vw,29px);letter-spacing:-.01em}
 
   /* cartes résultat */
-  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+  .cards{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media(max-width:480px){.cards{grid-template-columns:1fr}}
   .card{padding:14px 16px}
   .card .label{color:var(--ink2);font-size:10px;text-transform:uppercase;letter-spacing:.04em;
         font-weight:600;display:flex;align-items:center;gap:6px;padding-right:22px}
@@ -181,13 +183,13 @@
         <div class="unit" data-u="%"><input id="com" type="text" inputmode="decimal" value="3"></div>
       </div>
     </div>
-    <div class="grid">
+    <div class="grid" id="grid">
       <div class="field">
-        <label>Cote BACK</label>
+        <label>Cote BACK <span class="book-hint">(Winamax, Betclic, Unibet, PMU…)</span></label>
         <div class="unit" data-u="cote"><input id="ob" type="text" inputmode="decimal" value="10"></div>
       </div>
       <div class="field">
-        <label>Cote LAY</label>
+        <label>Cote LAY <span class="book-hint">(OrbitX)</span></label>
         <div class="unit" data-u="cote"><input id="ol" type="text" inputmode="decimal" value="10.2"></div>
       </div>
       <div class="field promo-only" style="display:none">
@@ -268,8 +270,9 @@ function setMode(m){
   mode = m;
   ['normal','free','promo'].forEach(x => $('m-'+x).classList.toggle('on', x===m));
   const isPromo = m==='promo';
-  $('promo-subs').style.display = isPromo ? 'flex' : 'none';
+  $('promo-subs').style.display = isPromo ? 'grid' : 'none';
   document.querySelectorAll('.promo-only').forEach(e => e.style.display = isPromo ? '' : 'none');
+  $('grid').classList.toggle('cols-3', isPromo);
   compute();
 }
 
