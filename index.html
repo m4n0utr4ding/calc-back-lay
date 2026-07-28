@@ -85,6 +85,8 @@
         color:var(--ink);font:600 18px var(--font);padding:12px;outline:none;transition:.15s}
   .field input:focus{border-color:var(--brand);background:#fff;box-shadow:0 0 0 3px rgba(30,42,68,.1)}
   .field input.auto{color:var(--gold)}
+  .field input::placeholder{color:var(--ink2);opacity:.55;font-weight:500}
+  .field input.auto::placeholder{color:var(--gold);opacity:.75;font-weight:600}
   .field .unit{position:relative}
   .field .unit::after{content:attr(data-u);position:absolute;right:12px;top:50%;transform:translateY(-50%);
         color:var(--ink2);font-size:12px;font-weight:600;pointer-events:none}
@@ -186,23 +188,23 @@
     <div class="grid" id="grid">
       <div class="field">
         <label>Cote BACK <span class="book-hint">(Winamax, Betclic, Unibet, PMU…)</span></label>
-        <div class="unit" data-u="cote"><input id="ob" type="text" inputmode="decimal" value="10"></div>
+        <div class="unit" data-u="cote"><input id="ob" type="text" inputmode="decimal" placeholder="ex. 10"></div>
       </div>
       <div class="field">
         <label>Cote LAY <span class="book-hint">(OrbitX)</span></label>
-        <div class="unit" data-u="cote"><input id="ol" type="text" inputmode="decimal" value="10.2"></div>
+        <div class="unit" data-u="cote"><input id="ol" type="text" inputmode="decimal" placeholder="ex. 10.2"></div>
       </div>
       <div class="field promo-only" style="display:none">
         <label>Valeur freebet</label>
-        <div class="unit" data-u="€"><input id="fb" type="text" inputmode="decimal" value="10"></div>
+        <div class="unit" data-u="€"><input id="fb" type="text" inputmode="decimal" placeholder="ex. 10"></div>
       </div>
       <div class="field promo-only" style="display:none">
         <label>Conversion</label>
-        <div class="unit" data-u="%"><input id="conv" type="text" inputmode="decimal" value="85"></div>
+        <div class="unit" data-u="%"><input id="conv" type="text" inputmode="decimal" placeholder="ex. 85"></div>
       </div>
       <div class="field">
         <label id="lbl-sb">Mise BACK</label>
-        <div class="unit" id="unit-sb" data-u="€"><input id="sb" type="text" inputmode="decimal" value="10"></div>
+        <div class="unit" id="unit-sb" data-u="€"><input id="sb" type="text" inputmode="decimal" placeholder="ex. 10"></div>
       </div>
       <div class="field">
         <label>Mise LAY <span class="hint" id="lay-tag">auto</span>
@@ -302,6 +304,22 @@ $('sl').addEventListener('input', () => {
 
 ['ob','ol','com','sb','fb','conv'].forEach(id => $(id).addEventListener('input', compute));
 
+// libellé / unité de la mise BACK selon le mode
+function syncLabels(){
+  $('lbl-sb').textContent = (mode==='free') ? 'Mise BACK Freebet' : 'Mise BACK';
+  $('unit-sb').setAttribute('data-u', (mode==='free') ? 'FB' : '€');
+  $('c-roi-label').textContent = (mode==='free') ? 'Conversion' : 'Rendement';
+}
+
+// état vide : aucun résultat, aucune alerte rouge tant que rien n'est saisi
+function clearResults(){
+  syncLabels();
+  $('scen').style.display = 'none';
+  ['c-guar','c-roi','c-liab','c-cap'].forEach(id => $(id).textContent = '—');
+  $('c-guar').className = 'big';
+  if(!layManual) $('sl').placeholder = 'auto';
+}
+
 function compute(){
   const ob = num($('ob').value);      // cote back
   const ol = num($('ol').value);      // cote lay
@@ -310,9 +328,17 @@ function compute(){
 
   const warn = $('warn');
   warn.style.display = 'none';
+
+  // champs vides (saisie pas encore commencée) → neutre, pas d'avertissement
+  if(['ob','ol','sb'].some(id => $(id).value.trim()==='')){
+    clearResults();
+    return;
+  }
+
   if(!(ob>1) || !(ol>1) || !(sb>0) || !(c>=0 && c<1) || ol-c<=0){
     warn.style.display='block';
     warn.textContent = 'Vérifie les saisies : cotes > 1, mise BACK > 0, commission entre 0 et 100 %.';
+    clearResults();
     return;
   }
 
@@ -335,7 +361,7 @@ function compute(){
   // mise lay réellement utilisée
   const sl = layManual ? num($('sl').value) : layEq;
   if(!layManual) $('sl').placeholder = layEq.toLocaleString('fr-FR',{maximumFractionDigits:2});
-  if(layManual && !(sl>=0)){ warn.style.display='block'; warn.textContent='Mise OrbitX invalide.'; return; }
+  if(layManual && !(sl>=0)){ warn.style.display='block'; warn.textContent='Mise OrbitX invalide.'; clearResults(); return; }
 
   const liab = sl*(ol-1);
   const backGain = sb*(ob-1);
@@ -355,9 +381,7 @@ function compute(){
   const cap = sb + liab;
   const roi = sb>0 ? guar/sb*100 : 0;
 
-  // libellé / unité de la mise BACK selon le mode
-  $('lbl-sb').textContent = (mode==='free') ? 'Mise BACK Freebet' : 'Mise BACK';
-  $('unit-sb').setAttribute('data-u', (mode==='free') ? 'FB' : '€');
+  syncLabels();
 
   // scénarios WIN / LOOSE : visibles seulement si la mise LAY diffère de l'équilibre
   $('scen').style.display = (layManual && Math.abs(sl - layEq) > 0.005) ? 'grid' : 'none';
@@ -369,7 +393,6 @@ function compute(){
   // Profit garanti + conversion/rendement (même taille)
   $('c-guar').textContent = eur(guar);
   $('c-guar').className = 'big ' + cls(guar);
-  $('c-roi-label').textContent = (mode==='free') ? 'Conversion' : 'Rendement';
   $('c-roi').textContent = roi.toLocaleString('fr-FR',{maximumFractionDigits:1}) + ' %';
 
   // Liquidité bloquée OrbitX
